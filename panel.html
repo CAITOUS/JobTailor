@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Job Tailor</title>
+  <link rel="stylesheet" href="panel.css">
+</head>
+<body>
+  <header>
+    <h1>Job Tailor</h1>
+    <button class="btn small" id="openOptions" title="Settings, API key, source files">Options</button>
+  </header>
+  <nav>
+    <button data-tab="job" class="active">Job</button>
+    <button data-tab="answer">Answer</button>
+    <button data-tab="log">Log</button>
+  </nav>
+  <main>
+    <div id="setupBanner" class="banner" hidden></div>
+
+    <!-- JOB -->
+    <section id="tab-job">
+      <div class="row">
+        <button class="btn primary grow" id="readJob">Read job from this tab</button>
+      </div>
+      <div class="status" id="jobStatus"></div>
+
+      <div id="jobCard" class="card" hidden>
+        <input type="text" id="jobTitle" placeholder="Job title">
+        <div class="row" style="margin-top:6px">
+          <input type="text" id="jobCompany" placeholder="Company" class="grow" style="width:auto">
+          <input type="text" id="jobLocation" placeholder="Location" class="grow" style="width:auto">
+        </div>
+        <details style="margin-top:6px">
+          <summary><span id="descLen"></span> — view / edit description</summary>
+          <textarea id="jobDesc" rows="10" style="margin-top:6px"></textarea>
+        </details>
+        <textarea id="jobNotes" rows="2" style="margin-top:6px" placeholder="Optional notes for this job (e.g. emphasize vendor management, referral from Sam)"></textarea>
+        <div class="row" style="margin-top:8px">
+          <button class="btn primary grow" id="generate">Tailor resume + cover letter</button>
+        </div>
+      </div>
+
+      <div id="result" hidden>
+        <div class="card">
+          <div class="row">
+            <div class="score" id="fitScore"></div>
+            <div class="grow small" id="fitSummary"></div>
+          </div>
+          <h3>Strengths</h3><ul class="list" id="strengths"></ul>
+          <h3>Gaps</h3><ul class="list" id="gaps"></ul>
+          <h3>Check before sending</h3><ul class="list" id="checks"></ul>
+        </div>
+        <div class="card">
+          <div class="row">
+            <button class="btn primary grow" id="dlResume">Download resume (.docx)</button>
+            <button class="btn primary grow" id="dlCover">Download cover letter (.docx)</button>
+          </div>
+          <div class="row" style="margin-top:6px">
+            <button class="btn grow" id="copyCover">Copy cover letter text</button>
+            <button class="btn grow" id="autofill" title="Fills empty name/email/phone/LinkedIn fields on the current page. Never submits.">Autofill contact fields</button>
+          </div>
+          <div class="row" style="margin-top:6px">
+            <button class="btn grow" id="markApplied">Mark as applied</button>
+          </div>
+          <details style="margin-top:8px">
+            <summary>Preview resume text</summary>
+            <pre id="resumePreview" class="small" style="white-space:pre-wrap"></pre>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ANSWER -->
+    <section id="tab-answer" hidden>
+      <p class="small muted">Highlight a question on any application page, right-click, and choose <b>Answer with my profile</b>. Or type it below.</p>
+      <textarea id="question" rows="4" placeholder="Paste or type an application question"></textarea>
+      <div class="row" style="margin-top:6px">
+        <select id="answerLength" style="width:auto">
+          <option value="auto">Length: auto</option>
+          <option value="short">Short</option>
+          <option value="medium">Medium</option>
+          <option value="long">Long</option>
+        </select>
+        <label class="small row" style="gap:4px"><input type="checkbox" id="useJobCtx" checked> Use current job</label>
+        <button class="btn primary grow" id="answerBtn">Answer</button>
+      </div>
+      <div class="status" id="answerStatus"></div>
+      <div id="answerCard" class="card" hidden>
+        <div id="needsYou" class="needs" hidden></div>
+        <textarea id="answerText" rows="8"></textarea>
+        <div class="row" style="margin-top:6px">
+          <button class="btn grow" id="copyAnswer">Copy</button>
+          <button class="btn primary grow" id="insertAnswer">Insert into field</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- LOG -->
+    <section id="tab-log" hidden>
+      <div class="row">
+        <span class="grow small muted" id="logSummary"></span>
+        <button class="btn small" id="exportCsv">Export CSV</button>
+      </div>
+      <table>
+        <thead><tr><th>Job</th><th>Fit</th><th>Status</th><th></th></tr></thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </section>
+  </main>
+  <script type="module" src="panel.js"></script>
+</body>
+</html>

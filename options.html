@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Job Tailor Options</title>
+  <link rel="stylesheet" href="panel.css">
+  <style>
+    main { max-width: 760px; margin: 0 auto; padding: 16px; }
+    label { display: block; font-weight: 600; margin: 10px 0 4px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+    @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
+    .src { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+  <header><h1>Job Tailor Options</h1><span class="status" id="saved"></span></header>
+  <main>
+    <div class="card">
+      <h2>Claude API</h2>
+      <label for="apiKey">API key</label>
+      <input type="text" id="apiKey" placeholder="sk-ant-..." autocomplete="off" spellcheck="false" style="-webkit-text-security: disc">
+      <p class="small muted">Stored only in this browser profile. Create a key at console.anthropic.com and set a monthly spend limit there.</p>
+      <div class="grid">
+        <div><label for="model">Model for resumes and cover letters</label><select id="model"></select></div>
+        <div><label for="effort">Effort</label>
+          <select id="effort"><option>low</option><option>medium</option><option>high</option></select></div>
+        <div><label for="answerModel">Model for question answers</label><select id="answerModel"></select></div>
+        <div><label for="answerEffort">Effort</label>
+          <select id="answerEffort"><option>low</option><option>medium</option><option>high</option></select></div>
+      </div>
+      <div class="row" style="margin-top:10px"><button class="btn" id="testKey">Test key</button><span class="status" id="testStatus"></span></div>
+    </div>
+
+    <div class="card">
+      <h2>Your details (used on documents and autofill)</h2>
+      <div class="grid">
+        <div><label for="fullName">Full name</label><input type="text" id="fullName"></div>
+        <div><label for="email">Email</label><input type="text" id="email"></div>
+        <div><label for="phone">Phone</label><input type="text" id="phone"></div>
+        <div><label for="location">City, State</label><input type="text" id="location"></div>
+        <div><label for="linkedin">LinkedIn URL</label><input type="text" id="linkedin"></div>
+        <div><label for="website">Website (optional)</label><input type="text" id="website"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Career source files</h2>
+      <p class="small muted">Load .md or .txt files: resumes, role histories, accomplishment lists, display rules. Claude writes only from these. Save a .docx as plain text first (Word: File › Save As › Plain Text).</p>
+      <input type="file" id="fileInput" accept=".md,.txt,.markdown,text/plain,text/markdown" multiple>
+      <div id="sourceList" style="margin-top:8px"></div>
+      <p class="small muted" id="sourceTotal"></p>
+    </div>
+
+    <div class="card">
+      <h2>Rules</h2>
+      <p class="small muted">One per line. These override everything else in the prompt.</p>
+      <textarea id="rules" rows="7"></textarea>
+      <button class="btn small" id="resetRules" style="margin-top:6px">Reset to defaults</button>
+    </div>
+
+    <div class="card">
+      <h2>Known answers (optional)</h2>
+      <p class="small muted">Facts you're comfortable reusing on applications. Anything not here or in your sources comes back as “NEEDS YOU”.</p>
+      <textarea id="knownAnswers" rows="5" placeholder="Work authorization: ...&#10;Requires sponsorship: ...&#10;Willing to relocate: ...&#10;Earliest start date: ..."></textarea>
+    </div>
+
+    <div class="card">
+      <h2>Log</h2>
+      <label for="followUpDays">Flag applications for follow-up after (days)</label>
+      <input type="text" id="followUpDays" inputmode="numeric" style="width:100px">
+    </div>
+  </main>
+  <script type="module" src="options.js"></script>
+</body>
+</html>
