@@ -95,7 +95,7 @@ On the Options page:
 
 1. Open a job posting. Job Tailor reads **Indeed, LinkedIn, Greenhouse, Lever and Workday** directly. On other sites it uses the page's structured job data, or the page text.
 2. Press **Alt+J** or click the Job Tailor icon to open the panel.
-3. Click **Read job**. **Check the title, company and description** and fix anything it got wrong.
+3. Click **Read job from this tab**. **Check the title, company and description** and fix anything it got wrong.
 4. Add optional notes for this job (for example, "lead with the compliance work").
 5. Click **Tailor**. You'll get:
    - a **fit score** (0–100) and a short summary
@@ -103,6 +103,14 @@ On the Options page:
    - a **Check before sending** list of anything it condensed or inferred
    - a resume and cover letter as Word files, saved to `Downloads/Job Tailor/<Company> - <Title>/`
 6. **Open both files, read them and edit them.** Then apply on the employer's site yourself.
+
+### The one-window workflow
+
+![The Job Tailor side panel beside an application form, with the tailored resume dragged from the browser's recent downloads into the upload box, and one folder per job in Downloads](img/workflow.png)
+
+- **Click straight through the side panel.** It stays open beside the posting or form: **Read job from this tab → Tailor → Autofill contact fields → Mark as applied.**
+- **One folder per job.** Files save to `Downloads/Job Tailor/<Company> - <Title>/` as `<Your name> - Resume - <Company>.docx` and `<Your name> - Cover Letter - <Company>.docx`, so you always know which version went where.
+- **Drag and drop to upload.** Open your browser's downloads list (the download icon in the toolbar, or `Ctrl+J` / `Cmd+Shift+J`) and drag the resume or cover letter straight into the application's upload box. This works in Brave, Chrome and Edge. If a site doesn't accept dropped files, use its **Upload** button and open the job's folder.
 
 Your rules and source files are cached by the API, so tailoring several jobs in a row costs less than the first.
 

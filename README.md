@@ -30,6 +30,14 @@ Full instructions: **[How it works: the Job Tailor guide](docs/GUIDE.md)**
 | **Answer** | Highlight any application question → right-click → **Answer with my profile**. Gets a draft in your voice. Anything only you can answer is flagged **NEEDS YOU**. |
 | **Log** | Tracks every job you tailored, with a status, a follow-up reminder (10 days by default) and CSV export. |
 
+### One window, a few clicks
+
+![Job Tailor workflow: side panel beside the application, resume dragged from recent downloads into the upload box, one folder per job](docs/img/workflow.png)
+
+- **Side panel, clicked straight through:** Read job → Tailor → Autofill → Mark as applied, with the posting always in view.
+- **One folder per job:** files save to `Downloads/Job Tailor/<Company> - <Title>/`, named with your name and the company.
+- **Drag and drop:** pull the resume from your browser's recent downloads straight into the application's upload box.
+
 ## Make it yours
 
 This project is meant to be downloaded, changed and made your own. You don't need to be a developer: upload the folder to the AI assistant you use (Claude, ChatGPT or similar) and ask for the changes you want. The guide has [a file map and example requests](docs/GUIDE.md#7-make-it-yours-with-ai).
