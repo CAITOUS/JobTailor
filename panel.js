@@ -2,7 +2,11 @@ import { callClaude, estimateCost } from './lib/claude.js';
 import { buildSystem, JOB_SCHEMA, jobPrompt, ANSWER_SCHEMA, answerPrompt } from './lib/prompts.js';
 import { buildResumeDocx, buildCoverLetterDocx, DOCX_MIME } from './lib/docx.js';
 import { extractJobFromPage, autofillContactFields, insertAnswerIntoPage } from './lib/extract.js';
-import { getSettings, getSources, getLog, saveLog, upsertLog } from './lib/store.js';
+import {
+  getSettings, getSources, getLog, saveLog, upsertLog,
+  getContext, saveContext, upsertContext, addGapAction, addNote, migrate,
+} from './lib/store.js';
+import { downloadBackup, BACKUP_REMINDER_DAYS } from './lib/backup.js';
 
 const $ = (id) => document.getElementById(id);
 const state = { job: null, result: null, logId: null, answerTarget: null };
@@ -57,6 +61,7 @@ function showTab(name) {
   document.querySelectorAll('nav button').forEach((b) => b.classList.toggle('active', b.dataset.tab === name));
   document.querySelectorAll('main > section').forEach((s) => { s.hidden = s.id !== `tab-${name}`; });
   if (name === 'log') renderLog();
+  if (name === 'context') renderContext();
 }
 document.querySelectorAll('nav button').forEach((b) => b.addEventListener('click', () => showTab(b.dataset.tab)));
 $('openOptions').addEventListener('click', () => chrome.runtime.openOptionsPage());
@@ -121,12 +126,12 @@ $('generate').addEventListener('click', async () => {
   btn.disabled = true;
   busy($('jobStatus'), 'Tailoring… this usually takes 30–90 seconds.');
   try {
-    const [settings, sources] = await Promise.all([getSettings(), getSources()]);
+    const [settings, sources, context] = await Promise.all([getSettings(), getSources(), getContext()]);
     const { json, usage } = await callClaude({
       apiKey: settings.apiKey,
       model: settings.model,
       effort: settings.effort,
-      system: buildSystem(settings, sources),
+      system: buildSystem(settings, sources, context),
       messages: [{ role: 'user', content: jobPrompt(state.job, $('jobNotes').value.trim()) }],
       schema: JOB_SCHEMA,
       maxTokens: 32000,
@@ -184,7 +189,7 @@ function renderResult() {
   s.className = `score ${r.fit_score >= 75 ? 'good' : r.fit_score >= 50 ? 'mid' : 'low'}`;
   $('fitSummary').textContent = r.fit_summary;
   fillList($('strengths'), r.strengths);
-  fillList($('gaps'), r.gaps);
+  renderGaps(r.gaps);
   fillList($('checks'), r.check_before_sending);
   $('resumePreview').textContent = resumeToText(r.resume);
 }
@@ -235,6 +240,157 @@ $('markApplied').addEventListener('click', async () => {
   setStatus($('jobStatus'), 'Marked as applied. It will be flagged for follow-up in the Log.');
 });
 
+// ---------- GAPS → ACTION ITEMS ----------
+const normGap = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+
+async function renderGaps(gaps) {
+  const ul = $('gaps');
+  ul.innerHTML = '';
+  if (!gaps || !gaps.length) { fillList(ul, []); return; }
+  const tracked = new Set((await getContext()).filter((c) => c.kind === 'gap' && c.status !== 'dismissed').map((c) => normGap(c.title)));
+  for (const gap of gaps) {
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    const span = document.createElement('span');
+    span.textContent = gap;
+    const markAdded = () => { btn.textContent = '✓'; btn.className = 'add-gap added'; btn.title = 'Tracked in Context › Action items'; btn.disabled = true; };
+    btn.className = 'add-gap';
+    btn.textContent = '+';
+    btn.title = 'Make this an action item so you can add context for it';
+    if (tracked.has(normGap(gap))) markAdded();
+    btn.onclick = async () => {
+      await addGapAction(gap, state.job);
+      markAdded();
+      updateOpenCount();
+    };
+    li.append(btn, span);
+    ul.appendChild(li);
+  }
+}
+
+// ---------- CONTEXT ----------
+async function updateOpenCount() {
+  const open = (await getContext()).filter((c) => c.kind === 'gap' && c.status === 'open').length;
+  $('openCount').hidden = !open;
+  $('openCount').textContent = open;
+}
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text != null) e.textContent = text;
+  return e;
+}
+function jobsLine(item) {
+  if (!item.jobs || !item.jobs.length) return '';
+  const first = item.jobs[0];
+  const more = item.jobs.length > 1 ? ` +${item.jobs.length - 1} more` : '';
+  return `Gap for ${first.company || first.title}${more}`;
+}
+
+function contextCard(item, { editing } = {}) {
+  const card = el('div', 'ctx');
+  if (item.title) card.appendChild(el('div', 'title', item.title));
+  const metaBits = [];
+  if (item.kind === 'gap') metaBits.push(jobsLine(item));
+  if (item.source && item.source.title) metaBits.push(`From: ${item.source.title}`);
+  metaBits.push(new Date(item.updatedAt || item.createdAt).toLocaleDateString());
+  card.appendChild(el('div', 'meta', metaBits.filter(Boolean).join(' · ')));
+
+  const row = el('div', 'row');
+  if (editing) {
+    const ta = el('textarea');
+    ta.rows = 4;
+    ta.value = item.text || '';
+    ta.placeholder = item.kind === 'gap'
+      ? 'What have you actually done that relates to this? Projects, tools, results, scale. Leave it as a gap if the answer is "nothing yet".'
+      : '';
+    card.appendChild(ta);
+    const save = el('button', 'btn primary', item.kind === 'gap' ? 'Save context' : 'Save');
+    save.onclick = async () => {
+      const text = ta.value.trim();
+      if (!text) { ta.focus(); return; }
+      await upsertContext({ id: item.id, text, status: 'done' });
+      setStatus($('contextStatus'), state.job ? 'Saved. Re-tailor the current job on the Job tab to use it.' : 'Saved. It will be used on your next tailor or answer.');
+      renderContext();
+    };
+    row.appendChild(save);
+    if (item.kind === 'gap') {
+      const dismiss = el('button', 'btn', 'Not a real gap / skip');
+      dismiss.onclick = async () => { await upsertContext({ id: item.id, status: 'dismissed' }); renderContext(); };
+      row.appendChild(dismiss);
+    }
+    if (item.status === 'done') {
+      const cancel = el('button', 'btn', 'Cancel');
+      cancel.onclick = () => renderContext();
+      row.appendChild(cancel);
+    }
+  } else {
+    card.appendChild(el('div', 'body', item.text));
+    const edit = el('button', 'btn small', 'Edit');
+    edit.onclick = () => card.replaceWith(contextCard(item, { editing: true }));
+    row.appendChild(edit);
+  }
+  const del = el('button', 'btn small', 'Delete');
+  del.onclick = async () => {
+    if (!confirm('Delete this context item?')) return;
+    await saveContext((await getContext()).filter((c) => c.id !== item.id));
+    renderContext();
+  };
+  row.appendChild(el('span', 'grow'));
+  row.appendChild(del);
+  card.appendChild(row);
+  return card;
+}
+
+async function renderContext() {
+  const context = await getContext();
+  const open = context.filter((c) => c.kind === 'gap' && c.status === 'open');
+  const saved = context.filter((c) => c.status === 'done' && c.text);
+  const q = $('contextFilter').value.trim().toLowerCase();
+  const shown = q ? saved.filter((c) => `${c.title} ${c.text}`.toLowerCase().includes(q)) : saved;
+
+  $('actionSummary').textContent = open.length ? `· ${open.length} open` : '';
+  $('actionList').innerHTML = '';
+  if (!open.length) $('actionList').appendChild(el('p', 'small muted', 'No open action items. Click + next to a gap on the Job tab to add one.'));
+  for (const item of open) $('actionList').appendChild(contextCard(item, { editing: true }));
+
+  $('savedSummary').textContent = `· ${saved.length} item(s), sent with every request`;
+  $('savedList').innerHTML = '';
+  if (!shown.length) $('savedList').appendChild(el('p', 'small muted', saved.length ? 'Nothing matches.' : 'Nothing saved yet.'));
+  for (const item of shown) $('savedList').appendChild(contextCard(item));
+  updateOpenCount();
+}
+
+$('contextFilter').addEventListener('input', renderContext);
+$('saveNote').addEventListener('click', async () => {
+  const text = $('noteText').value.trim();
+  if (!text) return setStatus($('contextStatus'), 'Write something first.', true);
+  await addNote(text, null, $('noteTopic').value.trim());
+  $('noteText').value = '';
+  $('noteTopic').value = '';
+  setStatus($('contextStatus'), 'Saved. It will be used on your next tailor or answer.');
+  renderContext();
+});
+
+// ---------- BACKUP REMINDER ----------
+async function checkBackup() {
+  const { lastBackupAt, backupSnoozeUntil } = await chrome.storage.local.get(['lastBackupAt', 'backupSnoozeUntil']);
+  const [context, log] = await Promise.all([getContext(), getLog()]);
+  const hasData = context.length || log.length;
+  const stale = !lastBackupAt || Date.now() - new Date(lastBackupAt).getTime() > BACKUP_REMINDER_DAYS * 86_400_000;
+  const snoozed = backupSnoozeUntil && Date.now() < backupSnoozeUntil;
+  $('backupBanner').hidden = !(hasData && stale && !snoozed);
+  $('backupMsg').textContent = lastBackupAt
+    ? `Last backup ${new Date(lastBackupAt).toLocaleDateString()}. Back up your context and log so nothing is lost if the extension is removed.`
+    : 'You have context and log entries that have never been backed up.';
+}
+$('backupNow').addEventListener('click', async () => { await downloadBackup(); checkBackup(); });
+$('backupLater').addEventListener('click', async () => {
+  await chrome.storage.local.set({ backupSnoozeUntil: Date.now() + 3 * 86_400_000 });
+  checkBackup();
+});
+
 // ---------- ANSWER ----------
 async function answerQuestion() {
   const question = $('question').value.trim();
@@ -244,13 +400,13 @@ async function answerQuestion() {
   $('answerCard').hidden = true;
   busy($('answerStatus'), 'Drafting answer…');
   try {
-    const [settings, sources] = await Promise.all([getSettings(), getSources()]);
+    const [settings, sources, context] = await Promise.all([getSettings(), getSources(), getContext()]);
     const tab = await targetTab().catch(() => null);
     const { json, usage } = await callClaude({
       apiKey: settings.apiKey,
       model: settings.answerModel,
       effort: settings.answerEffort,
-      system: buildSystem(settings, sources),
+      system: buildSystem(settings, sources, context),
       messages: [{
         role: 'user',
         content: answerPrompt({
@@ -305,6 +461,11 @@ chrome.storage.onChanged.addListener((changes, area) => {
     handlePending(changes.pendingQuestion.newValue);
   }
   if (area === 'local' && (changes.settings || changes.sources)) checkSetup();
+  if (area === 'local' && (changes.context || changes.log || changes.lastBackupAt)) checkBackup();
+  if (area === 'local' && changes.context) {
+    updateOpenCount();
+    if (!$('tab-context').hidden) renderContext();
+  }
 });
 
 // ---------- LOG ----------
@@ -383,7 +544,10 @@ $('exportCsv').addEventListener('click', async () => {
 
 // ---------- init ----------
 (async () => {
+  await migrate();
   checkSetup();
+  checkBackup();
+  updateOpenCount();
   const { panelState, pendingQuestion } = await chrome.storage.session.get(['panelState', 'pendingQuestion']);
   if (panelState) {
     Object.assign(state, panelState);

@@ -1,5 +1,6 @@
 import { MODELS, callClaude } from './lib/claude.js';
-import { getSettings, saveSettings, getSources, saveSources, DEFAULT_RULES } from './lib/store.js';
+import { getSettings, saveSettings, getSources, saveSources, DEFAULT_RULES, importAll, migrate } from './lib/store.js';
+import { downloadBackup } from './lib/backup.js';
 
 const $ = (id) => document.getElementById(id);
 const PROFILE_FIELDS = ['fullName', 'email', 'phone', 'location', 'linkedin', 'website'];
@@ -93,7 +94,33 @@ $('testKey').addEventListener('click', async () => {
   }
 });
 
+async function showLastBackup() {
+  const { lastBackupAt } = await chrome.storage.local.get('lastBackupAt');
+  $('lastBackup').textContent = lastBackupAt ? `Last backup: ${new Date(lastBackupAt).toLocaleString()}` : 'No backup yet.';
+}
+$('backupBtn').addEventListener('click', async () => {
+  await downloadBackup({ includeApiKey: $('backupKey').checked, saveAs: true });
+  showLastBackup();
+});
+$('restoreInput').addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const st = $('restoreStatus');
+  st.classList.remove('err');
+  try {
+    const counts = await importAll(JSON.parse(await file.text()));
+    st.textContent = `Restored ${counts.sources} source file(s), ${counts.context} context item(s), ${counts.log} log entr${counts.log === 1 ? 'y' : 'ies'}. Reloading…`;
+    setTimeout(() => location.reload(), 1200);
+  } catch (err) {
+    st.textContent = err instanceof SyntaxError ? 'That file isn’t valid JSON.' : err.message;
+    st.classList.add('err');
+  }
+  e.target.value = '';
+});
+
 (async () => {
+  await migrate();
+  showLastBackup();
   for (const id of ['model', 'answerModel']) {
     for (const [value, label] of Object.entries(MODELS)) $(id).add(new Option(label, value));
   }

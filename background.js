@@ -1,19 +1,22 @@
-// Opens the side panel (or a popup window where the browser lacks the side panel API)
-// and routes "Answer with my profile" selections to it.
+// Opens the side panel (or a popup window where the browser lacks the side panel API),
+// routes "Answer with my profile" selections to it, and saves highlighted text as context.
+
+import { migrate, addNote } from './lib/store.js';
 
 const HAS_SIDE_PANEL = !!(chrome.sidePanel && chrome.sidePanel.open);
 
-chrome.runtime.onInstalled.addListener((details) => {
-  chrome.contextMenus.create({
-    id: 'jt-answer',
-    title: 'Answer with my profile',
-    contexts: ['selection'],
+chrome.runtime.onInstalled.addListener(async (details) => {
+  chrome.contextMenus.removeAll(() => {
+    chrome.contextMenus.create({ id: 'jt-answer', title: 'Answer with my profile', contexts: ['selection'] });
+    chrome.contextMenus.create({ id: 'jt-save-context', title: 'Save to Job Tailor context', contexts: ['selection'] });
   });
   if (HAS_SIDE_PANEL) {
     chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {});
   }
+  await migrate();
   if (details.reason === 'install') chrome.runtime.openOptionsPage();
 });
+chrome.runtime.onStartup.addListener(() => migrate());
 
 function openFallbackWindow(tabId, tab) {
   chrome.windows.create({
@@ -29,8 +32,23 @@ if (!HAS_SIDE_PANEL) {
   chrome.action.onClicked.addListener((tab) => openFallbackWindow(tab.id, tab));
 }
 
+async function flashBadge(text) {
+  await chrome.action.setBadgeBackgroundColor({ color: '#6a4cff' });
+  await chrome.action.setBadgeText({ text });
+  setTimeout(() => chrome.action.setBadgeText({ text: '' }), 2500);
+}
+
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId !== 'jt-answer' || !tab) return;
+  if (!tab) return;
+  const text = (info.selectionText || '').trim();
+
+  if (info.menuItemId === 'jt-save-context') {
+    addNote(text, { title: tab.title || '', url: info.pageUrl || tab.url || '' })
+      .then(() => flashBadge('+1'));
+    return;
+  }
+
+  if (info.menuItemId !== 'jt-answer') return;
   // sidePanel.open must run inside the user gesture, before any await.
   if (HAS_SIDE_PANEL) {
     chrome.sidePanel.open({ tabId: tab.id }).catch(() => openFallbackWindow(tab.id, tab));
@@ -39,7 +57,7 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
   }
   chrome.storage.session.set({
     pendingQuestion: {
-      text: (info.selectionText || '').trim(),
+      text,
       tabId: tab.id,
       frameId: info.frameId || 0,
       pageUrl: info.pageUrl || tab.url,

@@ -2,6 +2,8 @@
 
 This guide covers installing Job Tailor in Brave, Chrome or Edge, setting it up, using each tab, and changing it to suit you.
 
+📘 For every feature with annotated screenshots, see the **[user manual](MANUAL.md)**.
+
 **Contents**
 
 1. [Before you start](#1-before-you-start)
@@ -128,6 +130,10 @@ If an answer depends on something only you know (salary, work authorization, spo
 
 ---
 
+## 5b. Build your context over time
+
+Click **+** next to any gap on the Job tab. It becomes an action item on the **Context** tab, where you write what you've actually done, or choose **Not a real gap / skip**. You can also add facts directly, or highlight text on any page → right-click → **Save to Job Tailor context**. Saved context is sent with every request, so re-tailor a job to use new context. Details: [manual section 6](MANUAL.md#6-progressive-context-turn-gaps-into-facts).
+
 ## 6. Track your applications
 
 The **Log** tab lists every job you've tailored. After you submit on the employer's site, click **Mark as applied** on the Job tab. Change each job's status as it moves: tailored, applied, interviewing, offer, rejected or withdrawn. Applied jobs are flagged for follow-up after your set number of days. Click **Export CSV** to take the log into a spreadsheet.
@@ -153,7 +159,8 @@ Job Tailor is plain HTML, CSS and JavaScript with **no build step**, so it's eas
 |---|---|
 | `manifest.json` | Name, version, permissions and the Alt+J shortcut |
 | `lib/prompts.js` | The instructions sent to Claude: tone, resume length, cover-letter style, what gets flagged |
-| `lib/store.js` | Default settings and the default rules |
+| `lib/store.js` | Default settings, default rules, context items, backup and data migrations |
+| `lib/backup.js` | Backup file download and reminder timing |
 | `lib/extract.js` | How each job site is read (`SITES` at the top) and how contact fields are autofilled |
 | `lib/docx.js` | The layout of the Word documents |
 | `lib/claude.js` | API calls, the model list and cost estimates |
@@ -175,7 +182,9 @@ Job Tailor is plain HTML, CSS and JavaScript with **no build step**, so it's eas
 
 ## 8. Update, troubleshoot or remove
 
-**Update:** download the new ZIP and replace the files in your existing folder (your settings are stored in the browser, not the folder). Then click **reload** (↻) on the Job Tailor card in your extensions page.
+**Update:** download the new ZIP and replace the files in your existing folder (your settings, context and log are stored in the browser, not the folder). Then click **reload** (↻) on the Job Tailor card in your extensions page. The extension ID is fixed in `manifest.json`, so your data carries over. ⚠️ **Never click Remove to update.**
+
+**Back up:** Options › **Download backup** saves everything to `Downloads/Job Tailor/backups/`. Restore merges and never deletes.
 
 **Change the shortcut:** go to `brave://extensions/shortcuts`, `chrome://extensions/shortcuts` or `edge://extensions/shortcuts`.
 
@@ -190,7 +199,7 @@ Job Tailor is plain HTML, CSS and JavaScript with **no build step**, so it's eas
 | API key error | Click **Test key** in Options. Check the key, your Console billing and your spend limit. |
 | "The response was cut off" | Lower the effort level in Options, or trim very long source files. |
 
-**Remove:** on your extensions page, click **Remove** on the Job Tailor card. This also deletes its stored settings and log, so export your log to CSV first.
+**Remove:** on your extensions page, click **Remove** on the Job Tailor card. This deletes its stored settings, context and log, so download a backup first.
 
 ---
 

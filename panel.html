@@ -14,10 +14,15 @@
   <nav>
     <button data-tab="job" class="active">Job</button>
     <button data-tab="answer">Answer</button>
+    <button data-tab="context">Context <span id="openCount" class="pill" hidden></span></button>
     <button data-tab="log">Log</button>
   </nav>
   <main>
     <div id="setupBanner" class="banner" hidden></div>
+    <div id="backupBanner" class="banner" hidden>
+      <span id="backupMsg"></span>
+      <div class="row" style="margin-top:6px"><button class="btn small" id="backupNow">Back up now</button><button class="btn small" id="backupLater">Remind me later</button></div>
+    </div>
 
     <!-- JOB -->
     <section id="tab-job">
@@ -49,7 +54,7 @@
             <div class="grow small" id="fitSummary"></div>
           </div>
           <h3>Strengths</h3><ul class="list" id="strengths"></ul>
-          <h3>Gaps</h3><ul class="list" id="gaps"></ul>
+          <h3>Gaps <span class="muted small" style="text-transform:none;letter-spacing:0">· click + to make an action item</span></h3><ul class="list gaps" id="gaps"></ul>
           <h3>Check before sending</h3><ul class="list" id="checks"></ul>
         </div>
         <div class="card">
@@ -95,6 +100,27 @@
           <button class="btn primary grow" id="insertAnswer">Insert into field</button>
         </div>
       </div>
+    </section>
+
+    <!-- CONTEXT -->
+    <section id="tab-context" hidden>
+      <div class="card">
+        <h2 style="margin-top:0">Add context</h2>
+        <input type="text" id="noteTopic" placeholder="Topic (optional), e.g. Vendor management at a previous job">
+        <textarea id="noteText" rows="4" style="margin-top:6px" placeholder="A project, result, skill, tool, or story Claude should know about. Facts only: this is used like your source files."></textarea>
+        <div class="row" style="margin-top:6px">
+          <span class="small muted grow">Tip: highlight text on any page → right-click → Save to Job Tailor context.</span>
+          <button class="btn primary" id="saveNote">Save</button>
+        </div>
+      </div>
+      <div class="status" id="contextStatus"></div>
+
+      <h2>Action items <span class="muted small" id="actionSummary"></span></h2>
+      <div id="actionList"></div>
+
+      <h2>Saved context <span class="muted small" id="savedSummary"></span></h2>
+      <input type="text" id="contextFilter" placeholder="Filter saved context">
+      <div id="savedList" style="margin-top:6px"></div>
     </section>
 
     <!-- LOG -->
