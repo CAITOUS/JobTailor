@@ -1,0 +1,55 @@
+# Publishes a GitHub release with the ready-to-load zip.
+# Run it from Actions › Release › Run workflow, or push a tag like v1.2.0.
+# The version comes from manifest.json; release notes come from that version's CHANGELOG.md section.
+name: Release
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build the package
+        id: build
+        run: |
+          VERSION=$(python3 -c "import json;print(json.load(open('manifest.json'))['version'])")
+          if [[ "${GITHUB_REF_TYPE}" == "tag" && "${GITHUB_REF_NAME}" != "v${VERSION}" ]]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} doesn't match manifest.json version ${VERSION}."; exit 1
+          fi
+          scripts/package.sh
+          python3 - "$VERSION" > notes.md <<'PY'
+          import sys, re
+          v = sys.argv[1]
+          s = open('CHANGELOG.md').read()
+          m = re.search(rf'^## {re.escape(v)}\b.*?$\n(.*?)(?=^## |\Z)', s, re.S | re.M)
+          print((m.group(1).strip() if m else 'See CHANGELOG.md.') + """
+
+          ### Install or update
+          1. Download **JobTailor-%s.zip** below and unzip it. You get one folder, `JobTailor`.
+          2. **New install:** turn on Developer mode on your extensions page, click **Load unpacked**, and choose the `JobTailor` folder.
+          3. **Updating:** back up (Options › Download backup), replace the files in your existing folder, then click **Reload** on the Job Tailor card. Accept any new permission it asks for. Never click Remove.
+
+          Full steps: [Guide](https://github.com/CAITOUS/JobTailor/blob/main/docs/GUIDE.md) · [User manual](https://github.com/CAITOUS/JobTailor/blob/main/docs/MANUAL.md)""".replace('\n          ', '\n') % v)
+          PY
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.build.outputs.version }}
+        run: |
+          if gh release view "v${VERSION}" >/dev/null 2>&1; then
+            gh release upload "v${VERSION}" "dist/JobTailor-${VERSION}.zip" --clobber
+            gh release edit "v${VERSION}" --notes-file notes.md
+          else
+            gh release create "v${VERSION}" "dist/JobTailor-${VERSION}.zip" \
+              --title "Job Tailor ${VERSION}" --notes-file notes.md --target "${GITHUB_SHA}" --latest
+          fi

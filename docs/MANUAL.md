@@ -28,9 +28,9 @@ Job Tailor helps you apply for jobs faster while staying in charge of every word
 
 Job Tailor installs from a folder, so your browser needs **developer mode** turned on. ⚠️ This is required in every browser.
 
-1. On the [repository page](https://github.com/CAITOUS/JobTailor), click **Code → Download ZIP** and unzip it to a folder you'll keep (for example `Documents/JobTailor`).
+1. Download **`JobTailor-<version>.zip`** from the [latest release](https://github.com/CAITOUS/JobTailor/releases/latest) and unzip it to a place you'll keep (for example `Documents`). It contains one folder, `JobTailor`.
 2. Open your browser's extensions page and turn on **Developer mode**.
-3. Click **Load unpacked** and choose the folder that contains `manifest.json`.
+3. Click **Load unpacked** and choose the `JobTailor` folder (it contains `manifest.json`).
 4. Pin Job Tailor to your toolbar.
 
 ![The browser extensions page with Developer mode turned on, the Load unpacked button, and the Job Tailor card with its Reload and Remove buttons](img/manual/install.png)
@@ -178,7 +178,7 @@ Click **Autofill contact fields** on the Job tab to fill **empty** name, email, 
 
 Every job you tailor is added to the Log. After you submit on the employer's site, click **Mark as applied** on the Job tab. That starts the follow-up clock.
 
-![The Log tab: a job opened with Track, showing stage, next follow-up, contact, notes, the Log an activity form and the timeline](img/manual/log.png)
+![The Log list: 1, totals and follow-ups due. 2, filter and search. 3, Export CSV and Activity CSV. 4, an overdue job flagged at the top with its next step. 5, the stage on each job, with Track](img/manual/log.png)
 
 **The list** answers "what do I do today?"
 - Jobs with a follow-up due come first, with an orange edge and **⚑ Due today** or **⚑ Overdue since…**. Then upcoming follow-ups, then everything else.
@@ -187,6 +187,9 @@ Every job you tailor is added to the Log. After you submit on the employer's sit
 - Filter by **Open**, **Follow-up due**, **All** or one stage, or search titles, companies, contacts and notes.
 
 **Click Track** on a job to open it:
+
+![A job opened with Track: 1, stage, next follow-up and next action. 2, contact, pay range and notes. 3, Log an activity. 4, the timeline](img/manual/log-track.png)
+
 - **Stage:** tailored, applied, screening, interviewing, offer, accepted, rejected, withdrawn or no response. Every change is added to the timeline. Closed stages (accepted, rejected, withdrawn, no response) stop the follow-up reminders.
 - **Next follow-up** and **Next action:** the date you'll be reminded and what to do then.
 - **Contact, their role, contact info, pay range and notes.** These save as soon as you leave the field.
@@ -235,7 +238,7 @@ Your settings, source files, context and log live in your browser profile. They 
 
 - **Back up:** Options › **Download backup**, or **Back up now** in the panel when it reminds you (every 14 days once you have context or log entries). Backups save to `Downloads/Job Tailor/backups/`. Your API key is left out unless you tick **Include API key**.
 - **Restore:** Options › **Restore from a backup file**. Restoring **merges**. Nothing already there is deleted, and the backup wins where the same item exists in both.
-- **Update:** download the new version, replace the files in your folder (a new folder works too), then click **Reload** (↻) on the Job Tailor card in your extensions page. The extension's ID is fixed in `manifest.json`, so your data stays connected. **Don't click Remove.**
+- **Update:** back up, download the new zip from [Releases](https://github.com/CAITOUS/JobTailor/releases/latest), replace the files in your folder (a new folder works too), then click **Reload** (↻) on the Job Tailor card in your extensions page. Accept any new permission it asks for. See [what's new](../CHANGELOG.md). The extension's ID is fixed in `manifest.json`, so your data stays connected. **Don't click Remove.**
 
 ---
 

@@ -12,11 +12,13 @@ Works in **Brave, Google Chrome and Microsoft Edge** (any Chromium browser, vers
 
 ## Quick start
 
-1. **Download it.** Click the green **Code** button above → **Download ZIP**, then unzip it somewhere permanent (for example `Documents/JobTailor`). Don't delete or move the folder after installing; the browser loads it from there.
+1. **Download it.** Get **`JobTailor-<version>.zip`** from the [latest release](https://github.com/CAITOUS/JobTailor/releases/latest) and unzip it somewhere permanent (for example `Documents/JobTailor`). Don't delete or move the folder after installing; the browser loads it from there.
 2. **Turn on developer mode** in your browser's extensions page. ⚠️ This is required because Job Tailor is installed from a folder, not from an extension store. See the [install steps for each browser](docs/GUIDE.md#2-install-it).
-3. **Click Load unpacked** and pick the unzipped folder (the one containing `manifest.json`).
+3. **Click Load unpacked** and pick the `JobTailor` folder from the zip (the one containing `manifest.json`).
 4. **Add your Claude API key, contact details and career files** on the Options page that opens.
 5. **Open a job posting** and press **Alt+J**.
+
+**Updating?** Back up from Options, replace the files in your folder with the new release, then click **Reload** on the extension card. Never click Remove. See [what's new](CHANGELOG.md).
 
 📘 **[User manual](docs/MANUAL.md)**: every feature, with annotated screenshots.  
 Quick install and troubleshooting: **[the guide](docs/GUIDE.md)**.
@@ -49,6 +51,10 @@ Gaps aren't a dead end. Flag one with **+**, explain it once on the Context tab,
 ### Edit everything in the browser
 
 Rules, career files, known answers, models and your details all live in the **Options** window, with no code to touch. Back up and restore from there too.
+
+## Releases
+
+Each [release](https://github.com/CAITOUS/JobTailor/releases) has a ready-to-load zip with only the files the browser needs, plus `INSTALL.txt`. Maintainers build it with `scripts/package.sh`, which writes `dist/JobTailor-<version>.zip` using the version in `manifest.json`.
 
 ## Make it yours
 

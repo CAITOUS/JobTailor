@@ -36,9 +36,11 @@ Job Tailor isn't in an extension store, so you install it from its folder. Every
 
 ### Get the files
 
-1. On the [repository page](https://github.com/CAITOUS/JobTailor), click **Code → Download ZIP**.
-2. Unzip it to a folder you'll keep, for example `Documents/JobTailor`.
-3. Open the folder and make sure you can see `manifest.json`. If you only see one folder inside, that inner folder is the one to load.
+1. Go to the [latest release](https://github.com/CAITOUS/JobTailor/releases/latest) and download **`JobTailor-<version>.zip`** under **Assets**.
+2. Unzip it to a place you'll keep, for example `Documents`. You'll get a folder named `JobTailor`.
+3. Open the `JobTailor` folder and make sure you can see `manifest.json`. That's the folder you'll load.
+
+> Want to customize the code? **Code → Download ZIP** on the repository page gets you everything, including these docs. The release zip has only what the browser needs.
 
 > ⚠️ **Don't move or delete the folder after installing.** The browser runs the extension from that folder. If it moves, the extension stops working until you load it again.
 
@@ -182,7 +184,7 @@ Job Tailor is plain HTML, CSS and JavaScript with **no build step**, so it's eas
 
 ## 8. Update, troubleshoot or remove
 
-**Update:** download the new ZIP and replace the files in your existing folder (your settings, context and log are stored in the browser, not the folder). Then click **reload** (↻) on the Job Tailor card in your extensions page. The extension ID is fixed in `manifest.json`, so your data carries over. ⚠️ **Never click Remove to update.**
+**Update:** back up first (Options › **Download backup**). Download the new zip from [Releases](https://github.com/CAITOUS/JobTailor/releases/latest) and replace the files in your existing folder (your settings, context and log are stored in the browser, not the folder). Then click **reload** (↻) on the Job Tailor card in your extensions page. The extension ID is fixed in `manifest.json`, so your data carries over. If the browser asks to approve a new permission, accept it. [What's new](../CHANGELOG.md) lists changes per version. ⚠️ **Never click Remove to update.**
 
 **Back up:** Options › **Download backup** saves everything to `Downloads/Job Tailor/backups/`. Restore merges and never deletes.
 
