@@ -15,7 +15,7 @@
     <button data-tab="job" class="active">Job</button>
     <button data-tab="answer">Answer</button>
     <button data-tab="context">Context <span id="openCount" class="pill" hidden></span></button>
-    <button data-tab="log">Log</button>
+    <button data-tab="log">Log <span id="dueCount" class="pill warn" hidden title="Follow-ups due"></span></button>
   </nav>
   <main>
     <div id="setupBanner" class="banner" hidden></div>
@@ -125,14 +125,22 @@
 
     <!-- LOG -->
     <section id="tab-log" hidden>
-      <div class="row">
-        <span class="grow small muted" id="logSummary"></span>
-        <button class="btn small" id="exportCsv">Export CSV</button>
+      <div class="small muted" id="logSummary"></div>
+      <div class="row" style="margin-top:6px">
+        <select id="logFilter" style="width:auto">
+          <option value="open">Open (not closed)</option>
+          <option value="due">Follow-up due</option>
+          <option value="all">All</option>
+        </select>
+        <input type="text" id="logSearch" class="grow" style="width:auto" placeholder="Search jobs, contacts, notes">
       </div>
-      <table>
-        <thead><tr><th>Job</th><th>Fit</th><th>Status</th><th></th></tr></thead>
-        <tbody id="logBody"></tbody>
-      </table>
+      <div class="row" style="margin-top:6px">
+        <span class="grow"></span>
+        <button class="btn small" id="exportCsv" title="One row per job, with the full timeline in the last column">Export CSV</button>
+        <button class="btn small" id="exportActivity" title="One row per follow-up, interview or note">Activity CSV</button>
+      </div>
+      <div class="status" id="logStatus"></div>
+      <div id="logList"></div>
     </section>
   </main>
   <script type="module" src="panel.js"></script>

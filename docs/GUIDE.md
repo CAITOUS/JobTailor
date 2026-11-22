@@ -136,7 +136,7 @@ Click **+** next to any gap on the Job tab. It becomes an action item on the **C
 
 ## 6. Track your applications
 
-The **Log** tab lists every job you've tailored. After you submit on the employer's site, click **Mark as applied** on the Job tab. Change each job's status as it moves: tailored, applied, interviewing, offer, rejected or withdrawn. Applied jobs are flagged for follow-up after your set number of days. Click **Export CSV** to take the log into a spreadsheet.
+The **Log** tab lists every job you've tailored. After you submit on the employer's site, click **Mark as applied** on the Job tab. Click **Track** on any job to set its stage, next follow-up date and action, contact, pay range and notes, and to **log an activity** (follow-up, screen, interview, thank-you, offer, rejection or note) with the method, date and details. Each activity suggests the next follow-up for you. Follow-ups due appear at the top of the list and as a number on the toolbar icon. **Export CSV** gives one row per job; **Activity CSV** gives one row per activity. Details: [manual section 9](MANUAL.md#9-track-applications-in-the-log).
 
 ---
 
