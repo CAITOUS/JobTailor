@@ -178,7 +178,7 @@ Click **Autofill contact fields** on the Job tab to fill **empty** name, email, 
 
 Every job you tailor is added to the Log. After you submit on the employer's site, click **Mark as applied** on the Job tab. That starts the follow-up clock.
 
-![The Log tab: a job opened with Track, showing stage, next follow-up, contact, notes, the Log an activity form and the timeline](img/manual/log.png)
+![The Log list: 1, totals and follow-ups due. 2, filter and search. 3, Export CSV and Activity CSV. 4, an overdue job flagged at the top with its next step. 5, the stage on each job, with Track](img/manual/log.png)
 
 **The list** answers "what do I do today?"
 - Jobs with a follow-up due come first, with an orange edge and **⚑ Due today** or **⚑ Overdue since…**. Then upcoming follow-ups, then everything else.
@@ -187,6 +187,9 @@ Every job you tailor is added to the Log. After you submit on the employer's sit
 - Filter by **Open**, **Follow-up due**, **All** or one stage, or search titles, companies, contacts and notes.
 
 **Click Track** on a job to open it:
+
+![A job opened with Track: 1, stage, next follow-up and next action. 2, contact, pay range and notes. 3, Log an activity. 4, the timeline](img/manual/log-track.png)
+
 - **Stage:** tailored, applied, screening, interviewing, offer, accepted, rejected, withdrawn or no response. Every change is added to the timeline. Closed stages (accepted, rejected, withdrawn, no response) stop the follow-up reminders.
 - **Next follow-up** and **Next action:** the date you'll be reminded and what to do then.
 - **Contact, their role, contact info, pay range and notes.** These save as soon as you leave the field.
