@@ -30,7 +30,7 @@ Quick install and troubleshooting: **[the guide](docs/GUIDE.md)**.
 | **Job** | Reads the posting (Indeed, LinkedIn, Greenhouse, Lever, Workday, with a fallback for other sites). Returns a fit score, your strongest matches, your gaps, a "check before sending" list, and two Word files: a one-page resume and a cover letter. |
 | **Answer** | Highlight any application question → right-click → **Answer with my profile**. Gets a draft in your voice. Anything only you can answer is flagged **NEEDS YOU**. |
 | **Context** | Click **+** on any gap to make it an action item, then explain what you've actually done. Saved context is used in every future application. You can also save highlighted text from any page. |
-| **Log** | Tracks every job you tailored, with a status, a follow-up reminder (10 days by default) and CSV export. |
+| **Log** | Tracks every job you tailored: stage, next follow-up date and action, contact, pay range, notes, and a timeline of every follow-up, screen and interview (with method and details). Follow-ups due show on the toolbar icon. Exports to CSV. |
 
 ### One window, a few clicks
 

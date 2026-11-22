@@ -80,7 +80,7 @@ Open a job posting and press **Alt+J**, or click the Job Tailor icon. The panel 
 | **Job** | Read the posting, tailor your documents, autofill and mark as applied |
 | **Answer** | Draft answers to application questions in your voice |
 | **Context** | Add facts and work through gaps you've flagged. The badge counts open items |
-| **Log** | Track status and follow-ups, and export to CSV |
+| **Log** | Track stage, follow-ups, contacts and notes, and export to CSV. The badge counts follow-ups due |
 
 ---
 
@@ -176,14 +176,37 @@ Click **Autofill contact fields** on the Job tab to fill **empty** name, email, 
 
 ## 9. Track applications in the Log
 
-Every job you tailor is added to the Log. After you submit on the employer's site, click **Mark as applied** on the Job tab.
+Every job you tailor is added to the Log. After you submit on the employer's site, click **Mark as applied** on the Job tab. That starts the follow-up clock.
 
-![The Log tab: totals and follow-ups due, Export CSV, a status dropdown per job, and a follow-up flag](img/manual/log.png)
+![The Log tab: a job opened with Track, showing stage, next follow-up, contact, notes, the Log an activity form and the timeline](img/manual/log.png)
 
-- **Status:** tailored, applied, interviewing, offer, rejected or withdrawn.
-- **⚑ Follow up** appears on applied jobs after your set number of days (default 10).
-- Click a job title to reopen the posting. **✕** removes the entry.
-- **Export CSV** saves the log for a spreadsheet.
+**The list** answers "what do I do today?"
+- Jobs with a follow-up due come first, with an orange edge and **⚑ Due today** or **⚑ Overdue since…**. Then upcoming follow-ups, then everything else.
+- Each job shows its stage, when you applied, your last contact (what, how, how long ago), how many follow-ups you've sent, and the next step.
+- The number on the **Log** tab, and on the toolbar icon, is how many follow-ups are due.
+- Filter by **Open**, **Follow-up due**, **All** or one stage, or search titles, companies, contacts and notes.
+
+**Click Track** on a job to open it:
+- **Stage:** tailored, applied, screening, interviewing, offer, accepted, rejected, withdrawn or no response. Every change is added to the timeline. Closed stages (accepted, rejected, withdrawn, no response) stop the follow-up reminders.
+- **Next follow-up** and **Next action:** the date you'll be reminded and what to do then.
+- **Contact, their role, contact info, pay range and notes.** These save as soon as you leave the field.
+
+**Log an activity** each time something happens:
+
+| What happened | Suggested next step |
+|---|---|
+| Follow-up sent | Next follow-up after your default gap (Options › Log), numbered #1, #2, #3… |
+| They responded | Reply / schedule in 2 days |
+| Recruiter / phone screen | Thank-you note tomorrow; stage moves to Screening |
+| Interview | Thank-you note tomorrow; stage moves to Interviewing |
+| Thank-you sent | Check in on the decision in 7 days |
+| Offer received | Respond in 2 days; stage moves to Offer |
+| Rejection | Stage moves to Rejected; reminders stop |
+| Note | Leaves the next step as it is |
+
+Pick the **method** (email, LinkedIn, phone, text, portal, video call, in person, referral), the date, who it was with, and the details. The suggested stage and next follow-up fill in for you; change them before you click **Add to timeline** if they don't fit. **✕** removes a timeline entry.
+
+**Export:** **Export CSV** saves one row per job, including follow-up counts, last contact, next step and the full timeline. **Activity CSV** saves one row per follow-up, screen, interview or note.
 
 ---
 
@@ -198,7 +221,7 @@ Everything that shapes your documents can be changed in the **Options** window, 
 | Reusable screening answers | **Known answers** | Your next answer |
 | Writing quality and cost | **Model** and **Effort** | Your next request |
 | Name and contact details on documents | **Your details** | Your next download or autofill |
-| Follow-up timing | **Log** | Immediately |
+| Default days between follow-ups | **Log** | Immediately |
 
 Facts you add on the **Context** tab work alongside all of these. To change the underlying instructions, layout or supported sites, see [section 12](#12-make-it-yours-with-ai).
 

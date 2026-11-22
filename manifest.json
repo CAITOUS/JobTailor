@@ -1,12 +1,13 @@
 {
   "manifest_version": 3,
   "name": "Job Tailor",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAujtmFBF34r22UkD4NhGh9W544dU/NGyPjNkVlWfq0/hcj7RZTV26pmZ1nQbdttId90wfvSlnASDmxztxyK5db8YXY831MnT8kW5g0+21dnf35V+taXRxzrRxI/ThUkY+dTTl6+93QbGsR9U7Rv6dCs9/8AhwEJxi43qIEm7vP/61/5J9613OFvCio9J04D4POcKLb5JHkIOM+3Ma78mssw7XlLOhPfnVf7yAEsOgtFJMpUGP8Tk5vacHUKIbJnrgvN98SfBFFPrLI44eD5VNJIkD7MJ/Af+lGSkKOWtd910dqapaZvYiY9EImeN5ZVMdGyMoYBDYyaUZwGt2tV7s4wIDAQAB",
   "description": "Review a job posting, tailor your resume and cover letter, answer application questions, and track what you applied to.",
   "minimum_chrome_version": "116",
   "permissions": [
     "storage",
+    "alarms",
     "unlimitedStorage",
     "sidePanel",
     "contextMenus",

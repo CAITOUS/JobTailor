@@ -1,7 +1,8 @@
 // Opens the side panel (or a popup window where the browser lacks the side panel API),
-// routes "Answer with my profile" selections to it, and saves highlighted text as context.
+// routes "Answer with my profile" selections to it, saves highlighted text as context,
+// and shows the number of follow-ups due on the toolbar icon.
 
-import { migrate, addNote } from './lib/store.js';
+import { migrate, addNote, dueCount } from './lib/store.js';
 
 const HAS_SIDE_PANEL = !!(chrome.sidePanel && chrome.sidePanel.open);
 
@@ -14,9 +15,29 @@ chrome.runtime.onInstalled.addListener(async (details) => {
     chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {});
   }
   await migrate();
+  chrome.alarms.create('jt-followups', { periodInMinutes: 60 });
+  updateBadge();
   if (details.reason === 'install') chrome.runtime.openOptionsPage();
 });
-chrome.runtime.onStartup.addListener(() => migrate());
+chrome.runtime.onStartup.addListener(async () => {
+  await migrate();
+  chrome.alarms.create('jt-followups', { periodInMinutes: 60 });
+  updateBadge();
+});
+
+// ---------- follow-up badge ----------
+let flashing = false;
+async function updateBadge() {
+  if (flashing) return;
+  const n = await dueCount().catch(() => 0);
+  await chrome.action.setBadgeBackgroundColor({ color: '#a35200' });
+  await chrome.action.setBadgeText({ text: n ? String(n) : '' });
+  await chrome.action.setTitle({ title: n ? `Job Tailor · ${n} follow-up${n === 1 ? '' : 's'} due` : 'Open Job Tailor' });
+}
+chrome.alarms.onAlarm.addListener((a) => { if (a.name === 'jt-followups') updateBadge(); });
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === 'local' && (changes.log || changes.settings)) updateBadge();
+});
 
 function openFallbackWindow(tabId, tab) {
   chrome.windows.create({
@@ -33,9 +54,10 @@ if (!HAS_SIDE_PANEL) {
 }
 
 async function flashBadge(text) {
+  flashing = true;
   await chrome.action.setBadgeBackgroundColor({ color: '#6a4cff' });
   await chrome.action.setBadgeText({ text });
-  setTimeout(() => chrome.action.setBadgeText({ text: '' }), 2500);
+  setTimeout(() => { flashing = false; updateBadge(); }, 2500);
 }
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
