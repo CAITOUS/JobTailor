@@ -23,6 +23,7 @@ async function save() {
     rules: $('rules').value,
     knownAnswers: $('knownAnswers').value,
     followUpDays: Math.max(1, parseInt($('followUpDays').value, 10) || 10),
+    qrCodes: $('qrCodes').checked,
     profile,
   });
   flashSaved();
@@ -133,9 +134,11 @@ $('restoreInput').addEventListener('change', async (e) => {
   $('rules').value = s.rules;
   $('knownAnswers').value = s.knownAnswers;
   $('followUpDays').value = s.followUpDays;
+  $('qrCodes').checked = !!s.qrCodes;
   for (const f of PROFILE_FIELDS) $(f).value = s.profile[f] || '';
   renderSources();
 
   document.querySelectorAll('input[type=text], textarea').forEach((el) => el.addEventListener('change', save));
   document.querySelectorAll('select').forEach((el) => el.addEventListener('change', save));
+  $('qrCodes').addEventListener('change', save);
 })();
