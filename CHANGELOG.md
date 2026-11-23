@@ -2,6 +2,12 @@
 
 Download any version from [Releases](https://github.com/CAITOUS/JobTailor/releases). To update, back up, replace the files in your Job Tailor folder, then click **Reload** on the extension card. Never click Remove.
 
+## 1.3.0 · November 2026
+
+- **Clickable links.** Email, LinkedIn and website in the resume and cover letter are real hyperlinks. The full address stays visible as text, on its own line, so applicant tracking systems read it and long URLs don't wrap.
+- **Print version with QR codes.** A new button on the Job tab saves a resume with QR codes for your portfolio and LinkedIn. Use it for printed copies; upload the regular version online.
+- QR codes are generated in the extension, with no outside service or library.
+
 ## 1.2.0 · November 2026
 
 **Application tracking.** The Log tab is now a follow-up tracker.

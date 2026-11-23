@@ -220,6 +220,14 @@ $('dlResume').addEventListener('click', async () => {
   const { dir, who, company } = folderFor(settings);
   await download(buildResumeDocx(settings.profile, state.result.resume), `${dir}/${who} - Resume - ${company}.docx`);
 });
+$('dlResumePrint').addEventListener('click', async () => {
+  const settings = await getSettings();
+  const { linkedin, website } = settings.profile;
+  if (!linkedin && !website) return setStatus($('jobStatus'), 'Add your LinkedIn or website in Options › Your details first.');
+  const { dir, who, company } = folderFor(settings);
+  await download(buildResumeDocx(settings.profile, state.result.resume, { qr: true }), `${dir}/${who} - Resume (print) - ${company}.docx`);
+  setStatus($('jobStatus'), 'Print version saved. Use the regular version for online applications.');
+});
 $('dlCover').addEventListener('click', async () => {
   const settings = await getSettings();
   const { dir, who, company } = folderFor(settings);
