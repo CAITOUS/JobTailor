@@ -97,7 +97,8 @@ Open a job posting and press **Alt+J**, or click the Job Tailor icon. The panel 
 - **Strengths:** your best evidenced matches.
 - **Gaps:** requirements your record doesn't show. Click **+** to work on one (see [section 6](#6-progressive-context-turn-gaps-into-facts)).
 - **Check before sending:** anything it condensed, inferred or worded closely. Read these first.
-- **Download** the resume and cover letter as Word files, or **Copy cover letter text** for a text box.
+- **Download** the resume and cover letter as Word files, or **Copy cover letter text** for a text box. Your email, LinkedIn and website are clickable links, and the full address shows as text so applicant tracking systems can read it.
+- **QR codes (optional):** turn on **Add QR codes for LinkedIn and website** in Options › Your details. The resume header then shows your name and contact details in a left column (60%) and two QR codes beside it (20% each), each with a vertical label. Best for printed copies. Turn it off for online applications: tracking systems ignore images and may misread column layouts.
 - **Preview resume text** shows the content without opening the file.
 
 **Always open, read and edit both documents before you apply.**

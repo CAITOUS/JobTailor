@@ -218,7 +218,7 @@ function folderFor(settings) {
 $('dlResume').addEventListener('click', async () => {
   const settings = await getSettings();
   const { dir, who, company } = folderFor(settings);
-  await download(buildResumeDocx(settings.profile, state.result.resume), `${dir}/${who} - Resume - ${company}.docx`);
+  await download(buildResumeDocx(settings.profile, state.result.resume, { qr: settings.qrCodes }), `${dir}/${who} - Resume - ${company}.docx`);
 });
 $('dlCover').addEventListener('click', async () => {
   const settings = await getSettings();
